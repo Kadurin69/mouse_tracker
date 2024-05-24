@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MouseOver</title>
+  </head>
+  <body>
+    <h1 id="X"></h1>
+    <h1 id="Y"></h1>
+    <script type="text/javascript">
+      let url = 'ws://' + window.location.host + '/ws/socket-server/'
+      const chatSocket = new WebSocket(url)
+      chatSocket.onopen = function(e){
+        console.log("Connection is good.")
+      }
+      chatSocket.onmessage = function(e){
+        let data = JSON.parse(e.data)
+        console.log('Data', data)
+      }
+
+
+      document.addEventListener('mousemove', function(event) {
+        var x = event.clientX;
+        var y = event.clientY;
+        var press = event.buttons == 1;
+        chatSocket.send(JSON.stringify({
+          'x':x,
+          'y':y,
+          'press':press
+        }))
+        document.getElementById("X").innerHTML = "X: " +  x;
+        document.getElementById("Y").innerHTML = "Y: " + y;
+        if (press) {
+          document.getElementById("press").innerHTML = "Pressed";
+        }   
+      })
+    </script>
+  </body>
+</html>
